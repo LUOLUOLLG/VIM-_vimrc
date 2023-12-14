@@ -1,0 +1,11 @@
+1.git init
+2.git remote add origin https://*******************'
+3.git remote -v
+4.git status
+5.git add .
+6.git status
+7.git commit -m "first commit"
+8.git config --global user.email "1372792130@qq.com"
+9.git config --global user.name "LUOLUOLLG"
+10.git commit -m "first commit"
+11.git push -u origin master
