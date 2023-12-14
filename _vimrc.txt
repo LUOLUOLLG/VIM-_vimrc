@@ -1,0 +1,175 @@
+" Vim with all enhancements
+source $VIMRUNTIME/vimrc_example.vim
+
+" Remap a few keys for Windows behavior
+source $VIMRUNTIME/mswin.vim
+
+" Use the internal diff if available.
+" Otherwise use the special 'diffexpr' for Windows.
+if &diffopt !~# 'internal'
+  set diffexpr=MyDiff()
+endif
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg1 = substitute(arg1, '!', '\!', 'g')
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg2 = substitute(arg2, '!', '\!', 'g')
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let arg3 = substitute(arg3, '!', '\!', 'g')
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  let cmd = substitute(cmd, '!', '\!', 'g')
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+
+
+"==================== System ======================
+set nocompatible "去除VI一致性
+set pythonthreedll=python310.dll
+set mouse=a
+set encoding=utf-8
+set clipboard=unnamed "vim剪切板和系统剪切板公用，可以相互复制
+set nobackup "取消自动生成带~后缀的备份文件
+set noundofile "取消un~
+set showmode " 显示模式
+"设置编码格式
+set langmenu=zh_CN.utf_8
+set guifont=Microsoft_YaHei_Mono:h16:cGB2312:qDRAFT
+set termencoding=utf-8
+set fileencodings=utf-8,ucs-bom,gbk,cp936,gb2312,gb18030,big5,euc-jp,euc-kr,latin1
+set fileencoding=utf-8
+"解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+"设置中文提示
+language messages zh_CN.utf-8
+"设置双字宽显示，防止有些字符显示不出来
+set ambiwidth=double
+
+"==================== Main Code Display ====================
+set number
+set gcr=a:block-blinkon0 " 光标设置成块状且禁止闪烁
+"set cursorline  "高亮显示列
+"set cursorcolumn "高亮显示行`
+"set relativenumber "相对行号
+set ruler  " 显示光标位置
+set nocursorline  " 突出显示当前行
+syntax enable " 语法高亮
+syntax on  " 语法高亮
+
+"==================== Editor Behavior ======================
+"BATTER TAB
+set expandtab
+set tabstop=2    "将制表符号转换为空格
+set shiftwidth=2 " 自动缩进的宽度为两个字符
+set softtabstop=2 " 插入模式下，Tab插入空格为2
+set softtabstop=4 "让vim把连续数量的空格视为一个制表符
+set list " 显示制表符和行尾空格
+set listchars=tab:▸\ ,trail:^ "设置制表和换行显示的示式为^
+set scrolloff=5 "设置光标距离窗口顶部和底部5行
+set wrap "文本折行
+set tw=0 "根据窗口宽度折行
+"BATTER BACKSPACE
+set backspace=indent,eol,start "backspace可删除缩进、换行，行首使用删除上一行
+set foldmethod=indent " 依赖缩进来确定折叠范围，zi打开或关闭当前折叠，zo打开，zc关闭
+set foldlevel=99 "所有折叠展开
+let &t_SI = "\<Esc>]50;CursorShape=1\x7" "设置VIM终端的光标形状
+let &t_SR = "\<Esc>]50;CursorShape=2\x7" "设置VIM终端的光标形状
+let &t_EI = "\<Esc>]50;CursorShape=0\x7" "设置VIM终端的光标形状
+
+"=================== Windows Behavior =========================
+set splitright "新窗口默认右侧
+set splitbelow "新窗口默认出现在底部
+autocmd GUIEnter * simalt ~x "默认打开窗口最大化
+
+"=================== Status/Command Bar =======================
+set laststatus=2 " 一直显示状态栏
+set autochdir " 自动切换到打开文档所在的目录
+set showcmd " 显示输入的命令
+set formatoptions-=tc "插入新行不复制上一行的缩进
+set wildmenu " 命令补全菜单化显示
+set wildmode=longest,list,full "选取最长的匹配项、多个匹配项全部列表显示，显示完整补全列表
+"SEARCH OPTIONS
+set hlsearch "高亮搜索
+set ignorecase
+
+"==================== Pair Symbol ============================
+"补全符号
+"inoremap ' ''<ESC>i
+"inoremap ( ()<ESC>i
+"inoremap [ []<ESC>i
+"inoremap { {}<ESC>i
+"inoremap < <><ESC>i
+
+"========================= vundle插件环境配置 ==========================
+filetype off
+set rtp+=C:\Users\13727\vimfiles\bundle\Vundle.vim
+call vundle#begin()
+"管理插件
+Plugin 'VundleVim/Vundle.vim'
+" 主题
+Plugin 'tpope/vim-fugitive'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'tomasr/molokai'
+Plugin 'morhetz/gruvbox'
+Plugin 'vim-airline/vim-airline-themes'
+" 自动补全
+"Plugin 'Valloric/YouCompleteMe'
+" 底部栏增强
+Plugin 'Lokaltog/vim-powerline'
+Plugin 'vim-airline/vim-airline'
+"Plugin 'vim-airline/vim-airline-themes'
+" 目录树
+Plugin 'scrooloose/nerdtree'
+" 格式化代码
+Plugin 'Chiel92/vim-autoformat'
+" 显示缩进线
+Plugin 'nathanaelkane/vim-indent-guides'
+call vundle#end()
+filetype plugin indent on
+
+"============================= Set ColorScheme ================================
+set background=dark
+colorscheme molokai
+
+"============================= Font Setting ================================
+set guifont=Lucida\ Sans\ Typewriter:h18
+
+"============================ Airline Setting ==============================
+let g:airline_powerline_fonts=1
+"底部栏的主题
+let g:airline_theme="molokai"
+"打开tabline功能,方便查看Buffer和切换
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_left_sep = '<-'
+let g:airline_left_alt_sep = '<<'
+let g:airline_right_sep = '->'
+let g:airline_right_alt_sep = '>>'
+let g:airline_symbols.branch = '|-|'
+let g:airline_symbols.readonly = '●'
+let g:airline_symbols.linenr = '▲'
+
