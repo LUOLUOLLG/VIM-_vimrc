@@ -4,8 +4,11 @@
 4.git status
 5.git add .
 6.git status
-7.git commit -m "first commit"
-8.git config --global user.email "1372792130@qq.com"
-9.git config --global user.name "LUOLUOLLG"
-10.git commit -m "first commit"
-11.git push -u origin master
+7.git commit -m "xxx"（备注信息）
+8.git checkout xxx(分支名字）
+9.git config --global user.email "1372792130@qq.com"
+10.git config --global user.name "LUOLUOLLG"
+11.git pull origin 分支名称
+12.git push -u origin 分支名称
+or
+12.git push -f origin 分支名称（强制推送）
